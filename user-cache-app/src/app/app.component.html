@@ -1,0 +1,66 @@
+<mat-toolbar color="primary">
+  <span>Cache App</span>
+  <!-- <button mat-button routerLink="/home">Home</button>
+  <button mat-button routerLink="/about">About</button> -->
+</mat-toolbar>
+
+<main>
+  <div class="container">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>User Factory</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field>
+          <mat-label>Number of Users</mat-label>
+          <input matInput placeholder="Number of Users" [(ngModel)]="numUsers" type="number">
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" [disabled]="isProcessing" (click)="generateUsers()">
+          <ng-container *ngIf="!isProcessing; else loading">
+            GENERATE USERS
+          </ng-container>
+          <ng-template #loading>
+            <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
+          </ng-template>
+        </button>
+
+        <button class="query-cache-button" mat-button (click)="queryCache()" [disabled]="autoUpdate">QUERY
+          CACHE</button>
+        <mat-checkbox [(ngModel)]="autoUpdate">Auto-update</mat-checkbox>
+      </mat-card-actions>
+    </mat-card>
+    <mat-card>
+      <mat-card-content>
+        <mat-tab-group>
+          <mat-tab label="RAW">
+            <pre>{{cacheInfo | json}}</pre>
+          </mat-tab>
+          <mat-tab label="VISUALIZE">
+            <visualize [cacheInfo]="cacheInfo"></visualize>
+          </mat-tab>
+          <mat-tab label="QUEUE">
+            <queue [requestQueue]="requestQueue"></queue>
+          </mat-tab>
+          <mat-tab label="SETTINGS">
+            <mat-form-field>
+              <mat-label>MAX Random Number</mat-label>
+              <input matInput placeholder="MAX Random Number" [(ngModel)]="MAX_NUMBER" type="number">
+            </mat-form-field>
+            <br />
+            <mat-form-field>
+              <mat-label>Interval (s)</mat-label>
+              <input matInput placeholder="Interval (s)" [(ngModel)]="INTERVAL" type="number">
+            </mat-form-field>
+            <span> Set to 0 for random interval between 1 - 5 seconds</span>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</main>
+
+<footer>
+  <!-- Add your footer content here -->
+</footer>

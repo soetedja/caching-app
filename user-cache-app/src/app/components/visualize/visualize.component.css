@@ -1,0 +1,55 @@
+table {
+    border-collapse: collapse;
+}
+
+td {
+    border: 1px solid #c1c1c1;
+    width: 50px;
+    height: 50px;
+}
+
+.visualize {
+    width: 96%;
+    margin: 16px;
+}
+
+.allocated {
+    background-color: rgb(191, 238, 191);
+}
+
+.dashboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 16px
+}
+
+.dashboard div {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.cell {
+    text-align: center;
+    padding: 5px; 
+}
+
+.cell-id {
+    float: left;
+}
+
+.number {
+    font-size: large;
+}
+
+.hits {
+    float: right;
+}

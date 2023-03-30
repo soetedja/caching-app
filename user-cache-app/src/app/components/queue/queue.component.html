@@ -1,0 +1,28 @@
+<mat-table *ngIf="requestQueue.length > 0" class="queue-table" #table [dataSource]="dataSource">
+    <ng-container matColumnDef="index">
+        <mat-header-cell *matHeaderCellDef>UserId</mat-header-cell>
+        <mat-cell *matCellDef="let queue">{{ queue.userId }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="number">
+        <mat-header-cell *matHeaderCellDef>Random Number</mat-header-cell>
+        <mat-cell *matCellDef="let queue">{{ queue.number }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="interval">
+        <mat-header-cell *matHeaderCellDef>Interval</mat-header-cell>
+        <mat-cell *matCellDef="let queue">{{ queue.interval }} ms</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="executed">
+        <mat-header-cell *matHeaderCellDef>Executed</mat-header-cell>
+        <mat-cell *matCellDef="let queue">
+            <mat-icon [ngClass]="{'mat-icon-green': queue.executed, 'mat-icon-red': !queue.executed}">
+                {{ queue.executed ? 'check_circle' : 'cancel' }}
+            </mat-icon>
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="['index', 'number', 'interval', 'executed']"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: ['index', 'number', 'interval', 'executed']"></mat-row>
+</mat-table>

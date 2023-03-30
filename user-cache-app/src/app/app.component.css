@@ -1,0 +1,36 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 20px;
+    height: 100vh;
+}
+
+.mat-mdc-card-title{
+    margin-bottom: 16px;
+}
+
+mat-card {
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+mat-card-actions {
+    margin: 0 8px;
+    justify-content: space-between;
+}
+
+.query-cache-button {
+    margin-left: 10px;
+}
+
+.full-width {
+    width: 98%;
+    margin-top: 22px;
+}
+
+.mat-grid-tile {
+    height: auto;
+    overflow: auto;
+}

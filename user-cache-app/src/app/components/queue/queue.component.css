@@ -1,0 +1,11 @@
+.mat-icon-green {
+    color: green;
+}
+
+.mat-icon-red {
+    color: red;
+}
+
+mat-header-cell {
+    text-transform: uppercase;
+}
