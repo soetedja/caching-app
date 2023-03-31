@@ -24,5 +24,9 @@ export class AppService {
         return this.http.get<any>(`${this.apiUrl}/Cache`);
     }
 
+    clearCache(): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/Cache/ClearCache`);
+    }
+
 
 }
