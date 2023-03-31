@@ -52,8 +52,7 @@ This simple web application uses the Least Recently Used (LRU) algorithm to demo
     
     The client should now be running on **`http://localhost:4200`**.
     
-
-## **Using the Application**
+ ## **Using the Application**
 
 The UI consists of the following components:
 
@@ -63,7 +62,7 @@ The UI consists of the following components:
     
 - **Generate Users Button**
     
-    Clicking this button generates the specified number of users and adds them to the cache.
+    Clicking this button generates the specified number of users and calls the backend API.
     
 - **Cache Statistics**
     
@@ -71,7 +70,7 @@ The UI consists of the following components:
     
 - **Cache Visualization**
     
-    This component visualizes the cache as a BLOCK memory.
+    This component visualizes the cache as a block memory.
     
 - **Request Queue Status**
     
