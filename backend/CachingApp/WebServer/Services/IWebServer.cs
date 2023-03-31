@@ -6,5 +6,6 @@ namespace Api.Services
     {
         int GetModNumber(int num);
         Cache GetCache();
+        bool ClearCache();
     }
 }
