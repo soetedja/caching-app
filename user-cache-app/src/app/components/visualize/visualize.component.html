@@ -8,7 +8,7 @@
             [ngClass]="{'allocated': cacheInfo.memoryLayout[row*10+col] > -1}">
             <span class="cell-id"><small>{{ row * 10 + col + 1 }}</small></span><br />
             <span class="number"><strong>{{cacheInfo.memoryLayout[row * 10 + col ]}}</strong></span><br />
-            <span class="hits" *ngIf="cacheInfo.memoryLayout[row * 10 + col ] > -1">Hits:
+            Hits: <span [ngClass]="{'greater-than-zero': cacheInfo.hitFrequency[cacheInfo.memoryLayout[row * 10 + col]] > 0}" class="hits" *ngIf="cacheInfo.memoryLayout[row * 10 + col ] > -1">
                 {{cacheInfo.hitFrequency[cacheInfo.memoryLayout[row * 10 + col]]}}</span>
         </td>
     </tr>

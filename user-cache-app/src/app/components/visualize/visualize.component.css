@@ -53,3 +53,8 @@ td {
 .hits {
     float: right;
 }
+
+.greater-than-zero {
+    /* color: rgb(61 209 0); */
+    font-weight: bold;
+}
