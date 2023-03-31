@@ -1,6 +1,5 @@
 using Api.Dto;
 using Api.Services;
-using Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers

@@ -1,9 +1,7 @@
-using Api.Dto;
 using Api.Models;
 using Api.Services;
 using Common;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.InteropServices;
 
 namespace Api.Controllers
 {
@@ -30,9 +28,8 @@ namespace Api.Controllers
                 TotalHits = cache.Hits,
                 TotalMisses = cache.Misses,
                 MemoryLayout = Cache.MemoryAddressLayout,
-                //CacheAuditLogs = cache.CacheAuditLogs,
                 HitFrequency = cache.GetFrequency(),
-        };
+            };
 
             return Ok(res);
         }

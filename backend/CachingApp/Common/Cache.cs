@@ -5,7 +5,6 @@ namespace Common
     public class Cache
     {
         private static readonly ConcurrentDictionary<int, CacheObject> cache = new();
-
         private readonly ConcurrentDictionary<int, List<DateTime>> cacheHitsHistory = new();
         private const int MAX_SIZE = 100;
         private int hits;
@@ -50,13 +49,7 @@ namespace Common
                 cacheHitsHistory.Remove(oldestKey, out _);
             }
 
-            if (cache.TryGetValue(key, out CacheObject? existingValue))
-            {
-                CacheObject newValue = existingValue;
-                newValue.LastAccessed = DateTime.Now;
-                cache.TryUpdate(key, newValue, existingValue);
-            }
-            else
+            if (!cache.TryGetValue(key, out _))
             {
                 CacheObject newValue = new(value, DateTime.Now);
                 cache.TryAdd(key, newValue);
@@ -76,8 +69,12 @@ namespace Common
             if (isFound)
             {
                 hits++;
-                //cacheHitsHistory[key].Add(DateTime.Now);
-                //cacheHitsHistory.AddOrUpdate(key, DateTime.Now, (key, oldValue) => oldValue);
+
+                // Update last  accessed date time of found cache 
+                CacheObject newCache = new(key, DateTime.Now);
+                cache.TryUpdate(key, newCache, value!);
+
+                // Add or Update cache history
                 if (cacheHitsHistory.TryGetValue(key, out var existingValue))
                 {
                     var newValue = existingValue;
@@ -105,8 +102,9 @@ namespace Common
 
             foreach (var cacheHistory in cacheHitsHistory)
             {
+                // get history from the last 5 seconds
                 var history = cacheHistory.Value?.Where(s => (DateTime.Now - s) <= TimeSpan.FromSeconds(5));
-                if(history != null)
+                if (history != null)
                 {
                     result[cacheHistory.Key] = history.Count();
                 }
