@@ -1,79 +1,99 @@
-﻿using System.Linq;
+﻿using System.Collections.Concurrent;
 
 namespace Common
 {
     public class Cache
     {
-        private readonly Dictionary<int, int> cache;
-        private readonly Dictionary<int, DateTime> cacheAuditLog;
-        private readonly Dictionary<int, List<DateTime>> cacheHitsHistory;
-        private readonly int maxSize;
+        private static readonly ConcurrentDictionary<int, CacheObject> cache = new();
+
+        private readonly ConcurrentDictionary<int, List<DateTime>> cacheHitsHistory = new();
+        private const int MAX_SIZE = 100;
         private int hits;
         private int misses;
 
         public Cache()
         {
-            cache = new Dictionary<int, int>();
-            cacheAuditLog = new Dictionary<int, DateTime>();
-            cacheHitsHistory = new Dictionary<int, List<DateTime>>();
-            maxSize = 100;
         }
 
         public int Hits => hits;
 
         public int Misses => misses;
 
-        //public List<int> MemoryAddressLayout => cache.Select(s => s.Key).ToList();
-
-        public List<int> MemoryAddressLayout
+        public static List<int> MemoryAddressLayout
         {
             get
             {
-                var sortedKeys = cacheAuditLog
-                    .Where(c => cache.Select(s => s.Key).Contains(c.Key))
-                    .OrderByDescending(pair => pair.Value)
-                    .Select(pair => pair.Key)
+                var sortedKeys = cache
+                    .OrderByDescending(o => o.Value.LastAccessed)
+                    .Select(s => s.Key)
                     .ToList();
                 return sortedKeys;
             }
         }
 
-        //public Dictionary<int, DateTime> CacheAuditLogs => cacheAuditLog;
-
-        public void Add(int key, int value)
+        public bool Clear()
         {
-            if (cache.Count >= maxSize)
+            cache.Clear();
+            cacheHitsHistory.Clear();
+            hits = 0;
+            misses = 0;
+            return true;
+        }
+
+        public void Add(int key, object value)
+        {
+            if (cache.Count >= MAX_SIZE)
             {
                 // If cache is full, remove the least accessed  item
                 int oldestKey = GetLeastAccessedCacheKey();
-                cache.Remove(oldestKey);
-                cacheHitsHistory.Remove(oldestKey);
-                cacheAuditLog.Remove(oldestKey);
+                cache.Remove(oldestKey, out _);
+                cacheHitsHistory.Remove(oldestKey, out _);
             }
 
-            cache.Add(key, value);
-            cacheAuditLog[key] = DateTime.Now;
+            if (cache.TryGetValue(key, out CacheObject? existingValue))
+            {
+                CacheObject newValue = existingValue;
+                newValue.LastAccessed = DateTime.Now;
+                cache.TryUpdate(key, newValue, existingValue);
+            }
+            else
+            {
+                CacheObject newValue = new(value, DateTime.Now);
+                cache.TryAdd(key, newValue);
+            }
         }
 
         private int GetLeastAccessedCacheKey()
         {
-            int key = cacheAuditLog.OrderBy(s => s.Value).FirstOrDefault().Key;
+            int key = cache.OrderBy(s => s.Value.LastAccessed).FirstOrDefault().Key;
             return key;
         }
 
-        public bool TryGetValue(int key, out int value)
+        public bool TryGetValue(int key, out CacheObject? value)
         {
             var isFound = cache.TryGetValue(key, out value);
 
             if (isFound)
             {
                 hits++;
-                cacheHitsHistory[key].Add(DateTime.Now);
-                cacheAuditLog[key] = DateTime.Now;
-            } else
+                //cacheHitsHistory[key].Add(DateTime.Now);
+                //cacheHitsHistory.AddOrUpdate(key, DateTime.Now, (key, oldValue) => oldValue);
+                if (cacheHitsHistory.TryGetValue(key, out var existingValue))
+                {
+                    var newValue = existingValue;
+                    newValue.Add(DateTime.Now);
+                    cacheHitsHistory.TryUpdate(key, newValue, existingValue);
+                }
+                else
+                {
+                    List<DateTime> newValue = new() { DateTime.Now };
+                    cacheHitsHistory.TryAdd(key, newValue);
+                }
+            }
+            else
             {
-                cacheHitsHistory.Add(key, new List<DateTime>());
                 misses++;
+                cacheHitsHistory.TryAdd(key, new List<DateTime>());
             }
 
             return isFound;
@@ -85,8 +105,11 @@ namespace Common
 
             foreach (var cacheHistory in cacheHitsHistory)
             {
-                var his = cacheHistory.Value.Where(s => (DateTime.Now - s) <= TimeSpan.FromHours(5));
-                result[cacheHistory.Key] = his.Count();
+                var history = cacheHistory.Value?.Where(s => (DateTime.Now - s) <= TimeSpan.FromSeconds(5));
+                if(history != null)
+                {
+                    result[cacheHistory.Key] = history.Count();
+                }
             }
 
             return result;

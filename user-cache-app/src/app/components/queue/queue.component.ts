@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
@@ -11,6 +11,12 @@ export class QueueComponent {
     dataSource = new MatTableDataSource(this.requestQueue);
     
     ngOnInit(){
-        this.dataSource = new MatTableDataSource(this.requestQueue);
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['requestQueue'].currentValue !== changes['requestQueue'].previousValue)
+        {
+            this.dataSource = new MatTableDataSource(this.requestQueue);
+        }
     }
 }

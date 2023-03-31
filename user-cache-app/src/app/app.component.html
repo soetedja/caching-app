@@ -29,6 +29,8 @@
         <button class="query-cache-button" mat-button (click)="queryCache()" [disabled]="autoUpdate">QUERY
           CACHE</button>
         <mat-checkbox [(ngModel)]="autoUpdate">Auto-update</mat-checkbox>
+        <button mat-raised-button mat-button (click)="clearCache()" [disabled]="isProcessing">CLEAR
+          CACHE</button>
       </mat-card-actions>
     </mat-card>
     <mat-card>

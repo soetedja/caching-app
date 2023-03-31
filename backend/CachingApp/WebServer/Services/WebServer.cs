@@ -2,7 +2,7 @@
 
 namespace Api.Services
 {
-    public class WebServer: IWebServer
+    public class WebServer : IWebServer
     {
         private readonly Cache _cache;
 
@@ -13,18 +13,29 @@ namespace Api.Services
 
         public int GetModNumber(int num)
         {
-            if(!_cache.TryGetValue(num, out var mod))
+            int modNumber;
+
+            if (!_cache.TryGetValue(num, out var mod))
             {
-                mod = num % 1234;
-                _cache.Add(num, mod);
+                modNumber = num % 1234;
+                _cache.Add(num, modNumber);
+            }
+            else
+            {
+                modNumber = (int)mod.Value;
             }
 
-            return mod;
+            return modNumber;
         }
 
         public Cache GetCache()
         {
             return _cache;
+        }
+
+        public bool ClearCache()
+        {
+            return _cache.Clear();
         }
     }
 }
